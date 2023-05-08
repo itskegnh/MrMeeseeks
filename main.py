@@ -16,17 +16,18 @@ bot = commands.InteractionBot(
 async def on_ready():
     print(f"🔑 {bot.user}.")
 
-@bot.slash_command()
+@bot.slash_command(
+    name="legacy",
+    description="Add the legacy role to all members who joined before 2023.",
+)
 @commands.default_member_permissions(administrator=True)
-async def legacy(inter : disnake.ApplicationCommandInteraction):
+async def _legacy(inter : disnake.ApplicationCommandInteraction):
     cutoff = datetime.datetime(2023, 1, 1, tzinfo=datetime.timezone.utc)
     legacy_role = inter.guild.get_role(1105119350052114434)
-    error_audit = await inter.guild.fetch_channel(1105089762768982036)
+    error_audit = await bot.fetch_channel(1105089762768982036)
 
     members = [member for member in inter.guild.members if member.joined_at < cutoff]
     print(f"🔎 Found {len(members)} members.")
-
-    await inter.response.send_message(f"Found {len(members)} members.")
 
     await inter.response.send_message("I'm Mr. Meeseeks, look at me!", embed=disnake.Embed(
         title="Legacy Members",
